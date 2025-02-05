@@ -10,7 +10,7 @@ import org.mapstruct.Mappings;
 import com.jorge.ejercicio.domain.Product;
 import com.jorge.ejercicio.persistence.entity.Producto;
 
-@Mapper(componentModel = "spring", uses = { CategoryMapper.class })
+@Mapper(componentModel = "spring", uses = {CategoryMapper.class})
 public interface ProductMapper {
 
 	@Mappings({
