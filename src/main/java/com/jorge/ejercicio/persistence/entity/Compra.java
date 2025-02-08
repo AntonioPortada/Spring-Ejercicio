@@ -3,6 +3,7 @@ package com.jorge.ejercicio.persistence.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Compra {
 	@JoinColumn(name = "id_cliente", insertable = false, updatable = false)
 	private Cliente cliente;
 
-	@OneToMany(mappedBy = "compra")
+	@OneToMany(mappedBy = "compra", cascade = { CascadeType.ALL })
 	private List<ComprasProducto> productos;
 	
 	public Integer getIdCompra() {
@@ -87,5 +88,21 @@ public class Compra {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public List<ComprasProducto> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<ComprasProducto> productos) {
+		this.productos = productos;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 }
