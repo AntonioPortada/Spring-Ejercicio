@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,27 +25,35 @@ public class ProductController {
 	private ProductService service;
 	
 	@GetMapping("/all")
-	public List<Product> getAll() {
-		return service.getAll();
+	public ResponseEntity<List<Product>> getAll() {
+		//return service.getAll();
+		return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
+		
 	}
 	
 	@GetMapping("/{productId}")
-	public Optional<Product> getProduct(@PathVariable("productId") int productId) {
-		return service.getProduct(productId);
+	public ResponseEntity<Product> getProduct(@PathVariable("productId") int productId) {
+		return service.getProduct(productId)
+				.map(product -> new ResponseEntity<>(product, HttpStatus.ACCEPTED.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		
 	}
 	
 	@GetMapping("category/categoriId")
-	public Optional<List<Product>> getByCategory(@PathVariable("categoriId") int categoryId) {
-		return service.getByCategory(categoryId);
+	public ResponseEntity<List<Product>> getByCategory(@PathVariable("categoriId") int categoryId) {
+		return service.getByCategory(categoryId)
+				.map(products -> new ResponseEntity<>(products, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
 	@PostMapping("/save")
-	public Product save(@RequestBody Product product) {
-		return service.save(product);
+	public ResponseEntity<Product> save(@RequestBody Product product) {
+		return new ResponseEntity<>(service.save(product), HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public boolean delete(@PathVariable("id") int productId) {
-		return service.delete(productId);
+	public ResponseEntity delete(@PathVariable("id") int productId) {
+		HttpStatus result = service.delete(productId) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+		return new ResponseEntity(result);
 	}
 }
