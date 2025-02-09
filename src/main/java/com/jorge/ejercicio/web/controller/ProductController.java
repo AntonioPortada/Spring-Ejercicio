@@ -1,7 +1,6 @@
 package com.jorge.ejercicio.web.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jorge.ejercicio.domain.Product;
 import com.jorge.ejercicio.domain.service.ProductService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -25,6 +29,8 @@ public class ProductController {
 	private ProductService service;
 	
 	@GetMapping("/all")
+	@ApiOperation("get all supermaket products")
+	@ApiResponse(code = 200, message = "OK")
 	public ResponseEntity<List<Product>> getAll() {
 		//return service.getAll();
 		return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
@@ -32,9 +38,15 @@ public class ProductController {
 	}
 	
 	@GetMapping("/{productId}")
-	public ResponseEntity<Product> getProduct(@PathVariable("productId") int productId) {
+	@ApiOperation("search a product with an ID")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "OK"),
+		@ApiResponse(code = 404, message = "Product not found")
+	})
+	public ResponseEntity<Product> getProduct(@ApiParam(value = "The id of the product", required = true, example = "7") 
+											  @PathVariable("productId") int productId) {
 		return service.getProduct(productId)
-				.map(product -> new ResponseEntity<>(product, HttpStatus.ACCEPTED.OK))
+				.map(product -> new ResponseEntity<>(product, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 		
 	}
